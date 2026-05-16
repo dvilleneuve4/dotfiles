@@ -28,6 +28,9 @@ require("config.startup")
 -- Key and mouse bindings (must be loaded last as it depends on variables)
 require("config.bindings")
 
+-- Windows rules
+require("config.windows")
+
 -- ===================================================================
 -- Notes:
 -- - This is a modular configuration split into multiple files

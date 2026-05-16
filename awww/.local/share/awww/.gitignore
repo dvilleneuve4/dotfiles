@@ -1,0 +1,34 @@
+# Downloaded wallpaper images
+wallpapers/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.avif
+*.bmp
+*.tiff
+
+# Thumbnail cache
+.thumbnails/
+*~$
+
+# Temporary files
+*.tmp
+*.temp
+
+# Cache directories
+.cache/
+__pycache__/
+*.py[cod]
+
+# Logs
+*.log
+
+# Python virtual environment
+venv/
+.env/
+.environment/
+*.egg-info/
+dist/
+build/

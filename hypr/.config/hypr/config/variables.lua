@@ -11,4 +11,7 @@ M.terminal = "kitty"
 M.fileManager = "nautilus"
 M.menu = "rofi -show drun"
 
+-- Wallpaper directory for awww
+M.wallpaperDir = os.getenv("HOME") .. "/.local/share/awww/wallpapers"
+
 return M

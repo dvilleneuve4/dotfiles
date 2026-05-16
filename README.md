@@ -83,10 +83,12 @@ sudo apt install stow
 cd ~/dotfiles
 
 # Deploy all packages
-for pkg in hypr rofi waybar gtk brave-apps; do
+for pkg in hypr rofi waybar gtk brave-apps kitty; do
     stow -v -S $pkg -t ~
 done
 ```
+
+**Note**: The kitty package requires the JetBrains Mono Nerd Font to be installed.
 
 **Note:** The `brave-apps` package contains custom `.desktop` files for Brave browser applications (WhatsApp, YouTube). These will be symlinked to `~/.local/share/applications/`.
 
@@ -127,11 +129,19 @@ Each package mirrors its target location in the home directory:
 
 ```
 dotfiles/
+├── kitty/                        # ~/.config/kitty/
+│   └── .config/
+│       └── kitty/
+│           ├── kitty.conf         # Main configuration
+│           └── theme.conf          # Catppuccin-Mocha color theme
+│
 ├── hypr/                          # ~/.config/hypr/
 │   └── .config/
 │       └── hypr/
 │           ├── hyprland.lua        # Main Lua config (entry point)
+│           ├── hypridle.conf       # Idle management config
 │           ├── hyprlock.conf       # Screen locker config
+│           ├── toggle-hide-input.sh # Script to toggle password visibility
 │           └── config/
 │               ├── variables.lua   # Global variables
 │               ├── startup.lua     # Autostart applications
@@ -214,6 +224,52 @@ The configuration enables **US International layout** (`kb_variant = "intl"`), w
 - **Modules**: Workspaces, window title, MPD, idle inhibitor, volume, CPU, memory, temperature, keyboard, language, clock, notifications, tray, power menu
 - **Theme**: Kanagawa color scheme
 
+### Kitty
+
+Kitty terminal emulator configuration with Catppuccin-Mocha theme:
+
+- **Font**: JetBrains Mono Nerd Font, 14pt
+- **Theme**: Catppuccin-Mocha (dark purple-gray base with pastel accents)
+- **Transparency**: Slight background opacity (90%)
+- **Features**:
+  - Hidden tab bar (single window mode)
+  - 2000 lines of scrollback
+  - Blinking block cursor
+  - 10px window padding
+- **Files**:
+  - `kitty/.config/kitty/kitty.conf` - Main configuration
+  - `kitty/.config/kitty/theme.conf` - Catppuccin-Mocha color theme
+
+To deploy: `stow -v -S kitty -t ~`
+
+### Hypridle
+
+Idle management configuration based on typecraft-dev's setup:
+
+- **Lock screen**: After 5.5 minutes (330s) of idle
+- **Dim display**: After 5 minutes (300s) - dims to 10% brightness
+- **Turn off display**: After 6 minutes (350s)
+- **Suspend**: After 15 minutes (900s) of idle
+- **Idle inhibition**: Waybar's idle inhibitor module will pause hypridle during video playback/presentations
+- **File**: `hypr/.config/hypr/hypridle.conf`
+
+**Note**: The suspend timeout only triggers when the system is truly idle. Applications like video players will inhibit the idle timer.
+
+### Hyprlock
+
+Screen locker configuration with improved styling:
+
+- **Background**: Blurred current wallpaper (using awww) with 3 blur passes
+- **Input**: On left monitor (DP-1) only
+- **Size**: 300x60 input field
+- **Labels**: Time, Date, Day of week, Username greeting
+- **Error display**: Text label + input field fail text for failed attempts
+- **Password visibility**: Eye icon placeholder for future toggle implementation
+- **Theme**: Matches Catppuccin-Mocha colors with JetBrains Mono Nerd Font
+- **File**: `hypr/.config/hypr/hyprlock.conf`
+
+**Note**: For the blurred wallpaper to work, ensure `~/.local/share/awww/wallpapers/current` exists (create a symlink to your current wallpaper).
+
 ## GNU Stow Commands
 
 ### Deploy a Package
@@ -278,18 +334,18 @@ Planned setup with `awwww`:
 ## TO-DO
 
 - [ ] **Binding Cheatsheet**: Create a reference document or script that displays all current keybindings
-- [ ] **Hypridle Setup**:
-  - Configure `hypridle` to lock the screen after idle timeout
-  - Add Waybar widget/module to pause/unpause `hypridle` (e.g., during presentations or video playback)
+- [x] **Hypridle Setup**:
+  - [x] Configure `hypridle` to lock the screen after idle timeout
+  - [ ] Add Waybar widget/module to pause/unpause `hypridle` (e.g., during presentations or video playback)
 - [ ] **Wallpaper Management**:
-  - Install and configure `awwww` for wallpaper management
-  - Store only wallpaper **URLs/links** in the repository (not binary files)
-  - Create a script to fetch/update wallpapers from links
-  - Ensure image files are in `.gitignore`
-  - Add `.gitattributes` if needed for line ending consistency
-- [ ] **Terminal Styling**:
-  - Configure Kitty terminal theme
-  - Install and configure `starship` prompt
+  - [ ] Install and configure `awwww` for wallpaper management
+  - [ ] Store only wallpaper **URLs/links** in the repository (not binary files)
+  - [ ] Create a script to fetch/update wallpapers from links
+  - [ ] Ensure image files are in `.gitignore`
+  - [ ] Add `.gitattributes` if needed for line ending consistency
+- [x] **Terminal Styling**:
+  - [x] Configure Kitty terminal theme (Catppuccin-Mocha, JetBrains Mono font, 14pt)
+  - [ ] Install and configure `starship` prompt
 
 ## Troubleshooting
 

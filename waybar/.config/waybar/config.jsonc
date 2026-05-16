@@ -1,10 +1,11 @@
 // -*- mode: jsonc -*-
-{
+[{
     // "layer": "top", // Waybar at top layer
     // "position": "bottom", // Waybar position (top|bottom|left|right)
-    "height": 30, // Waybar height (to be removed for auto height)
+    "height": 24, // Waybar height (to be removed for auto height)
     // "width": 1280, // Waybar width
     "spacing": 4, // Gaps between modules (4px)
+    "output":"HDMI-A-1",
     // Choose the order of the modules
     "modules-left": [
         "custom/launcher",
@@ -35,16 +36,16 @@
     },
     // Modules configuration
     "hyprland/workspaces": {
-        "disable-scroll": true,
-        "all-outputs": true,
+        "disable-scroll": false,
+        "all-outputs": false,
         "warp-on-scroll": false,
         "format": "{name}: {icon}",
         "format-icons": {
             "1": "",
-            "2": "",
             "3": "",
-            "4": "",
             "5": "",
+            "7": "",
+            "9": "",
             "urgent": "",
             "focused": "",
             "default": ""
@@ -96,12 +97,7 @@
         }
     },
     "tray": {
-        // "icon-size": 21,
-        "spacing": 10,
-        // "icons": {
-        //   "blueman": "bluetooth",
-        //   "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
-        // }
+        "spacing": 10
     },
     "clock": {
         // "timezone": "America/New_York",
@@ -186,4 +182,45 @@
 			"hibernate": "systemctl hibernate"
 		}
     }
+},
+{
+    // "layer": "top", // Waybar at top layer
+    // "position": "bottom", // Waybar position (top|bottom|left|right)
+    "height": 24, // Waybar height (to be removed for auto height)
+    // "width": 1280, // Waybar width
+    "spacing": 4, // Gaps between modules (4px)
+    "output":"DP-1",
+    // Choose the order of the modules
+    "modules-left": [
+        "custom/launcher",
+        "hyprland/workspaces"
+    ],
+    "modules-center": [
+        "hyprland/window"
+    ],
+    "modules-right": [
+    ],
+    "custom/launcher": {
+    "format": "",
+    "on-click": "rofi -show drun",
+    "tooltip": false
+    },
+    // Modules configuration
+    "hyprland/workspaces": {
+        "disable-scroll": false,
+        "all-outputs": false,
+        "warp-on-scroll": false,
+        "format": "{name}: {icon}",
+        "format-icons": {
+            "2": "",
+            "4": "",
+            "6": "",
+            "8": "",
+            "0": "",
+            "urgent": "",
+            "focused": "",
+            "default": ""
+        }
+    }
 }
+]

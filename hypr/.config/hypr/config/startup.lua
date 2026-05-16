@@ -8,6 +8,9 @@ hl.on("hyprland.start", function()
     -- System services
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     
+    -- Idle management daemon
+    hl.exec_cmd("hypridle")
+    
     -- Status bar
     hl.exec_cmd("waybar")
     

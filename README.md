@@ -32,6 +32,7 @@ This configuration was inspired by and incorporates ideas from:
 - `nm-applet` - Network manager applet
 - `grimblast` - Screenshot tool
 - `kitty` - Terminal emulator
+- `brightnessctl` - Display brightness control (required for hypridle dimming)
 - `nautilus` - File manager
 - `brave` - Web browser
 - `pavucontrol` - Audio control
@@ -247,13 +248,16 @@ To deploy: `stow -v -S kitty -t ~`
 Idle management configuration based on typecraft-dev's setup:
 
 - **Lock screen**: After 5.5 minutes (330s) of idle
-- **Dim display**: After 5 minutes (300s) - dims to 10% brightness
+- **Dim display**: After 5 minutes (300s) - dims to 10% brightness using `brightnessctl`
 - **Turn off display**: After 6 minutes (350s)
 - **Suspend**: After 15 minutes (900s) of idle
 - **Idle inhibition**: Waybar's idle inhibitor module will pause hypridle during video playback/presentations
 - **File**: `hypr/.config/hypr/hypridle.conf`
+- **Autostart**: Started automatically via `config/startup.lua`
 
 **Note**: The suspend timeout only triggers when the system is truly idle. Applications like video players will inhibit the idle timer.
+
+**Requirements**: `brightnessctl` package must be installed for the display dimming feature.
 
 ### Hyprlock
 

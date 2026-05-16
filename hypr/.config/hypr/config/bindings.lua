@@ -53,7 +53,10 @@ hl.bind(mainMod .. " + SHIFT + S", hl.dsp.submap("screenshot"))
 -- Bindings within the screenshot submap
 -- Each binding automatically resets to the default submap after execution
 
-hl.define_submap("screenshot", function()
+-- reset to the global submap if there are things broken
+hl.bind(mainMod .. " + escape", hl.dsp.submap("reset"), { submap_universal = true })
+
+hl.define_submap("screenshot", "reset", function()
 
     -- grimblast: copy area to clipboard
     hl.bind("S", hl.dsp.exec_cmd("grimblast --notify copy area"))
@@ -63,6 +66,8 @@ hl.define_submap("screenshot", function()
 
     -- grimblast: copy active window to clipboard
     hl.bind("A", hl.dsp.exec_cmd("grimblast --notify copy active"))
+    -- reset if we don't want to take a screenshot anymore
+    hl.bind("escape", hl.dsp.submap("reset")) 
 end )
 
 -- ===================================================================

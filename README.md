@@ -2,153 +2,236 @@
 
 My CachyOS Hyprland Configuration - Managed with GNU Stow
 
-This repository contains all my dotfiles, organized using GNU Stow with proper package structure.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 📁 Directory Structure
+This repository contains my personal dotfiles for a complete Hyprland Wayland compositor setup, organized using GNU Stow. The configuration includes a modular Hyprland Lua config, Rofi application launcher, Waybar status bar, and theming for GTK applications.
+
+## Inspiration & Credits
+
+This configuration was inspired by and incorporates ideas from:
+
+- **[Zilero232/arch-install-kit](https://github.com/Zilero232/arch-install-kit)** - Rofi configuration with Catppuccin/Kanagawa color themes
+- **[typecraft-dev/dotfiles](https://github.com/typecraft-dev/dotfiles)** - Overall structure and organization ideas
+
+## Prerequisites
+
+### Required Packages
+
+**Window Management & Compositor:**
+- `hyprland` - Wayland compositor
+- `hyprlock` - Screen locker
+- `hypridle` - Idle management
+- `xdg-desktop-portal-hyprland` - Screen sharing support
+
+**Status Bar & Launchers:**
+- `waybar` - Status bar
+- `rofi` - Application launcher (with `rofi-wayland`)
+- `swaync` - Notification daemon
+
+**Utilities:**
+- `nm-applet` - Network manager applet
+- `grimblast` - Screenshot tool
+- `kitty` - Terminal emulator
+- `nautilus` - File manager
+- `brave` - Web browser
+- `pavucontrol` - Audio control
+- `mpd` / `mpc` - Music player daemon (optional, for waybar module)
+
+**Theming:**
+- `qt6ct` - Qt6 theme configuration
+- `adw-gtk3` - GTK3 theme for dark mode
+- `papirus-icon-theme` - Icon theme (used in rofi)
+- `jetbrains-mono-nerd-fonts` - Font for rofi and waybar
+- `ttf-nerd-fonts-symbols` - Nerd Font symbols
+
+**Wallpaper Management:**
+- `awwww` - Wallpaper manager (TODO)
+
+**Shell & Prompt:**
+- `starship` - Shell prompt (TODO)
+
+### Fonts
+
+Required Nerd Fonts for icons:
+```bash
+sudo pacman -S jetbrains-mono-nerd-fonts ttf-nerd-fonts-symbols
+```
+
+## Installation
+
+### 1. Clone the Repository
+
+```bash
+cd ~
+git clone https://github.com/dvilleneuve4/dotfiles.git
+git clone git@github.com:dvilleneuve4/dotfiles.git  # If using SSH
+```
+
+### 2. Install GNU Stow
+
+```bash
+# Arch Linux
+sudo pacman -S stow
+
+# Debian/Ubuntu
+sudo apt install stow
+```
+
+### 3. Deploy All Configurations
+
+```bash
+cd ~/dotfiles
+
+# Deploy all packages
+for pkg in hypr rofi waybar gtk brave-apps; do
+    stow -v -S $pkg -t ~
+done
+```
+
+**Note:** The `brave-apps` package contains custom `.desktop` files for Brave browser applications (WhatsApp, YouTube). These will be symlinked to `~/.local/share/applications/`.
+
+### 4. Install Required Packages
+
+On **Arch Linux** (CachyOS):
+
+```bash
+# Core window management
+sudo pacman -S hyprland hyprlock hypridle xdg-desktop-portal-hyprland
+
+# Status bar and launchers
+sudo pacman -S waybar rofi-wayland swaync
+
+# Utilities
+sudo pacman -S networkmanager-applet grimblast kitty nautilus pavucontrol mpd mpc
+
+# Theming
+sudo pacman -S qt6ct adw-gtk3 papirus-icon-theme jetbrains-mono-nerd-fonts ttf-nerd-fonts-symbols
+
+# GTK theme settings
+sudo pacman -S gsettings-desktop-schemas
+```
+
+### 5. Enable Services
+
+```bash
+# Enable Hyprland polkit agent (for system dialogues)
+systemctl --user enable --now hyprpolkitagent
+
+# Enable swaync notification daemon
+systemctl --user enable --now swaync
+```
+
+## Directory Structure
 
 Each package mirrors its target location in the home directory:
 
 ```
 dotfiles/
-├── hypr/                      # Package: ~/.config/hypr/*
+├── hypr/                          # ~/.config/hypr/
 │   └── .config/
 │       └── hypr/
-│           ├── hyprland.conf  # Legacy config
-│           └── hyprland.lua   # New Lua config
+│           ├── hyprland.lua        # Main Lua config (entry point)
+│           ├── hyprlock.conf       # Screen locker config
+│           └── config/
+│               ├── variables.lua   # Global variables
+│               ├── startup.lua     # Autostart applications
+│               ├── monitors.lua    # Monitor configuration
+│               ├── workspaces.lua  # Workspace rules
+│               ├── input.lua       # Keyboard layout (US International)
+│               ├── bindings.lua    # Key and mouse bindings
+│               └── appearance.lua  # Theme and appearance
 │
-├── rofi/                     # Package: ~/.config/rofi/*
+├── rofi/                         # ~/.config/rofi/
 │   └── .config/
 │       └── rofi/
-│           ├── config.rasi
-│           └── colors.rasi
+│           ├── config.rasi        # Rofi configuration
+│           └── colors.rasi         # Kanagawa color theme
 │
-├── waybar/                   # Package: ~/.config/waybar/*
+├── waybar/                       # ~/.config/waybar/
 │   └── .config/
 │       └── waybar/
-│           ├── config
-│           └── style.css
+│           ├── config.jsonc       # Waybar modules
+│           ├── style.css          # Base styling
+│           ├── power_menu.xml      # Power menu
+│           └── themes/
+│               └── kanagawa.css    # Kanagawa color theme
 │
-├── kitty/                    # Package: ~/.config/kitty/*
+├── gtk/                          # ~/.config/gtk-*/
 │   └── .config/
-│       └── kitty/
+│       └── gtk-*/
+│           └── settings.ini       # GTK dark mode
 │
-├── fish/                     # Package: ~/.config/fish/*
-│   └── .config/
-│       └── fish/
-│
-├── swaync/                   # Package: ~/.config/swaync/*
-│   └── .config/
-│       └── swaync/
-│
-├── micro/                    # Package: ~/.config/micro/*
-│   └── .config/
-│       └── micro/
-│
-├── applications/              # Package: ~/.local/share/applications/*
+├── brave-apps/                   # ~/.local/share/applications/
 │   └── .local/
 │       └── share/
 │           └── applications/
-│               ├── Cyberpunk 2077.desktop
-│               ├── brave-agimnkijcaahngcdmfeangaknmldooml-Default.desktop
-│               └── foundry-vtt.desktop
+│               ├── brave-whatsapp.desktop
+│               └── brave-youtube.desktop
 │
-├── icons/                    # Package: ~/.local/share/icons/*
-│   └── .local/
-│       └── share/
-│           └── icons/
-│               └── hicolor/
-│                   ├── 16x16/apps/
-│                   ├── 32x32/apps/
-│                   └── ...
-│
-├── dotfiles/                 # Package: ~/.* (dotfiles)
-│   └── home/
-│       ├── .zshrc
-│       ├── .gitconfig
-│       ├── .bash_profile
-│       ├── .bashrc
-│       └── .vibe/
-│
-├── misc/                     # Package: other ~/.config/* files
-│   └── .config/
-│       ├── baloofileinformationrc
-│       ├── dolphinrc
-│       └── ...
-│
-├── .gitignore
 ├── LICENSE
-├── README.md
-└── setup.sh
+└── README.md
 ```
 
-## 🚀 Quick Start
+## Configuration Details
 
-### Prerequisites
+### Hyprland
 
-- **GNU Stow**: `sudo pacman -S stow` (Arch) or `sudo apt install stow` (Debian/Ubuntu)
-- **Git**: `sudo pacman -S git` or `sudo apt install git`
+The Hyprland configuration uses the new **Lua format** (0.55.0+) with a modular structure:
 
-### Initial Setup
+- **Variables** (`config/variables.lua`): Defines global variables like `mainMod`, `terminal`, etc.
+- **Startup** (`config/startup.lua`): Applications launched on Hyprland start
+- **Monitors** (`config/monitors.lua`): Dual monitor setup (HDMI-A-1 right, DP-1 left)
+- **Workspaces** (`config/workspaces.lua`): 10 workspaces alternating between monitors
+- **Input** (`config/input.lua`): **US International keyboard layout** for accents/special characters
+- **Bindings** (`config/bindings.lua`): All keybindings including screenshot submap
+- **Appearance** (`config/appearance.lua`): Dark theme, gaps, borders, shadows, blur
 
-```bash
-cd ~/dotfiles
-chmod +x setup.sh
-./setup.sh
-```
+#### Keyboard Layout (US International)
 
-Answer `y` to all prompts. The script will:
-1. Create package directories with mirrored structure
-2. Copy configs to package directories (originals preserved)
-3. Create symlinks using GNU Stow
-4. Initialize Git and create a version tag
-5. Verify all symlinks
+The configuration enables **US International layout** (`kb_variant = "intl"`), which provides dead keys for typing accents and special characters:
 
-### Restoration on Fresh System
+| Dead Key + Letter | Result |
+|-------------------|--------|
+| `'` + `e` | é |
+| `'` + `a` | á |
+| `'` + `u` | ú |
+| `` ` `` + `e` | è |
+| `` ` `` + `a` | à |
+| `~` + `n` | ñ |
+| `^` + `u` | û |
+| `"` + `u` | ü |
 
-```bash
-# Clone repository
-git clone git@github.com:dvilleneuve4/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+### Rofi
 
-# Stow all packages
-stow -v -S hypr -t ~
-stow -v -S rofi -t ~
-stow -v -S waybar -t ~
-stow -v -S kitty -t ~
-stow -v -S fish -t ~
-stow -v -S swaync -t ~
-stow -v -S micro -t ~
-stow -v -S applications -t ~
-stow -v -S icons -t ~
-stow -v -S dotfiles -t ~
-stow -v -S misc -t ~
-```
+- **Theme**: Kanagawa color scheme with transparency
+- **Font**: JetBrains Mono Nerd Font
+- **Modes**: drun (desktop entries), run (commands), window (window switcher)
+- **Sidebar**: Mode switching on the side
 
-Or use a loop:
-```bash
-for pkg in hypr rofi waybar kitty fish swaync micro applications icons dotfiles misc; do
-    stow -v -S $pkg -t ~
-done
-```
+### Waybar
 
-## 🔄 GNU Stow Commands
+- **Position**: Top bar
+- **Modules**: Workspaces, window title, MPD, idle inhibitor, volume, CPU, memory, temperature, keyboard, language, clock, notifications, tray, power menu
+- **Theme**: Kanagawa color scheme
 
-### Deploy
+## GNU Stow Commands
+
+### Deploy a Package
 ```bash
 stow -v -S <package> -t ~
 ```
 
-### Undo
+### Undo (Remove Symlinks)
 ```bash
 stow -v -D <package> -t ~
 ```
 
-### Re-stow (Update)
+### Re-stow (Update Existing)
 ```bash
 stow -v -R <package> -t ~
 ```
 
-### List
+### List Deployed Packages
 ```bash
 stow -v -l -t ~
 ```
@@ -158,49 +241,57 @@ stow -v -l -t ~
 stow -v -S --override=* <package> -t ~
 ```
 
-## 📝 Git Workflow
+## Usage
 
-```bash
-cd ~/dotfiles
+### Hyprland Keybindings
 
-# After changes
-git add .
-git commit -m "Updated Hyprland config"
-git tag -a "update-$(date +%Y%m%d-%H%M%S)" -m "Config updates"
-git push
-git push --tags
-```
+| Key | Action |
+|-----|--------|
+| `SUPER + Q` | Open terminal (kitty) |
+| `SUPER + E` | Open file manager (nautilus) |
+| `SUPER + R` | Open application launcher (rofi) |
+| `SUPER + C` | Close active window |
+| `SUPER + M` | Shutdown / Exit |
+| `SUPER + V` | Toggle floating |
+| `SUPER + 1-0` | Switch to workspace 1-10 |
+| `SUPER + SHIFT + 1-0` | Move window to workspace 1-10 |
+| `SUPER + h/j/k/l` | Move focus (vim-style) |
+| `SUPER + SHIFT + S` | Screenshot mode |
+| `SUPER + SHIFT + L` | Lock screen |
+| `SUPER + SHIFT + W` | Open WhatsApp (Brave) |
+| `SUPER + SHIFT + Y` | Open YouTube (Brave) |
 
-### Rollback
+#### Screenshot Mode
+After pressing `SUPER + SHIFT + S`:
+- `S` - Copy area to clipboard
+- `E` - Edit area in GIMP
+- `A` - Copy active window to clipboard
+- `ESC` - Cancel
 
-```bash
-# List tags
-git tag -l
+### Wallpaper Management (TODO)
 
-# Checkout old version
-git checkout tags/old-version
+Planned setup with `awwww`:
+- Store wallpaper **links only** in repository (not actual image files)
+- Script to download/update wallpapers from links
+- `.gitignore` will exclude actual image files
 
-# Re-stow all packages
-for pkg in hypr rofi waybar kitty fish swaync micro applications icons dotfiles misc; do
-    stow -v -R $pkg -t ~
-done
+## TO-DO
 
-# Return to main
-git checkout main
-```
+- [ ] **Binding Cheatsheet**: Create a reference document or script that displays all current keybindings
+- [ ] **Hypridle Setup**:
+  - Configure `hypridle` to lock the screen after idle timeout
+  - Add Waybar widget/module to pause/unpause `hypridle` (e.g., during presentations or video playback)
+- [ ] **Wallpaper Management**:
+  - Install and configure `awwww` for wallpaper management
+  - Store only wallpaper **URLs/links** in the repository (not binary files)
+  - Create a script to fetch/update wallpapers from links
+  - Ensure image files are in `.gitignore`
+  - Add `.gitattributes` if needed for line ending consistency
+- [ ] **Terminal Styling**:
+  - Configure Kitty terminal theme
+  - Install and configure `starship` prompt
 
-## ✅ Verification
-
-```bash
-# Check key symlinks
-ls -la ~/.config/hypr/hyprland.conf
-ls -la ~/.local/share/applications/
-ls -la ~/.zshrc
-
-# All should show -> /home/dvillene/dotfiles/<package>/...
-```
-
-## 🛠️ Troubleshooting
+## Troubleshooting
 
 ### "Target already exists"
 ```bash
@@ -234,26 +325,18 @@ ls -la ~/dotfiles/hypr/.config/hypr/
 stow -v -v -S hypr -t ~
 ```
 
-## 📖 Understanding the Structure
+## Resources
 
-GNU Stow works by creating symlinks from a package directory to a target. The package directory must mirror the target structure.
-
-**Example:**
-```
-Source: ~/dotfiles/hypr/.config/hypr/hyprland.conf
-         ↓ (stow -S hypr -t ~)
-Target: ~/.config/hypr/hyprland.conf ← symlink to source
-```
-
-Each package is self-contained and can be stowed independently.
-
-## 📚 Resources
-
-- [GNU Stow Manual](https://www.gnu.org/software/stow/manual/)
-- [Arch Wiki: Dotfiles](https://wiki.archlinux.org/title/Dotfiles)
+- **[Hyprland Wiki](https://wiki.hypr.land/)** - Official documentation
+- **[GNU Stow Manual](https://www.gnu.org/software/stow/manual/)** - Symlink farm manager
+- **[Arch Wiki: Dotfiles](https://wiki.archlinux.org/title/Dotfiles)** - Dotfile management
+- **[Zilero232/arch-install-kit](https://github.com/Zilero232/arch-install-kit)** - Rofi theme inspiration
+- **[typecraft-dev/dotfiles](https://github.com/typecraft-dev/dotfiles)** - Structure inspiration
 
 ---
 
-**Maintainer**: dvillene (David Villeneuve)
+**Maintainer**: [dvilleneuve4](https://github.com/dvilleneuve4)
+
 **Repository**: [github.com/dvilleneuve4/dotfiles](https://github.com/dvilleneuve4/dotfiles)
+
 **License**: [MIT](LICENSE)
